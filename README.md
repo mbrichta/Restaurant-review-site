@@ -2,6 +2,7 @@
 Openclassrooms: Project 7
 
 I need help with a few things:
+
   -Fix responsiveness problem where buttons and the buttom of the cards don't stack.
   -Some general help with responsiveness would be good.
   -I have triend everything to center the Intro-text and searchbar in the middle of the video but no success yet :/
