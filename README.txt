@@ -15,7 +15,8 @@ What I have accomplished:
   -Show the restaurant Markers on the map.
   -Display the avg stars rating.
   -Add reviews about existing restaurants.
-  -Add a restaurant by clicking on the map. 
+  -Add a restaurant by clicking on the map.
+  -I managed do get the search bar to recomend nearby places with the API, but its not working perfectly yet.
   
 To-Do's (there's probably more):
 
