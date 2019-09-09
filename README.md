@@ -10,6 +10,7 @@ I need help with a few things:
    Something about a .get() but I dont exactly now what it is.
   
 What I have accomplished:
+
   -Display the list of restaurants.
   -Show the restaurant Markers on the map.
   -Display the avg stars rating.
@@ -17,6 +18,7 @@ What I have accomplished:
   -Add a restaurant by clicking on the map. 
   
 To-Do's (there's probably more):
+
   -Google maps will focus on the users Geolocation (Almost done)
   -View reviews of restaurants.
   -Go to google street view.
