@@ -1,0 +1,106 @@
+[
+    {
+        "restaurantName": "Bronco",
+        "address": "39 Rue des Petites Écuries, 75010 Paris",
+        "lat": 48.8737815,
+        "long": 2.3501649,
+        "ratings": [
+            {
+                "stars": 4,
+                "comment": "Great! But not many veggie options."
+            },
+            {
+                "stars": 5,
+                "comment": "My favorite restaurant!"
+            }
+        ]
+    },
+    {
+        "restaurantName": "Babalou",
+        "address": "4 Rue Lamarck, 75018 Paris",
+        "lat": 48.8865035,
+        "long": 2.3442197,
+        "ratings": [
+            {
+                "stars": 5,
+                "comment": "Tiny pizzeria next to Sacre Coeur!"
+            },
+            {
+                "stars": 3,
+                "comment": "Meh, it was fine."
+            },
+            {
+                "stars": 5,
+                "comment": "Awesome"
+            },
+            {
+                "stars": 4,
+                "comment": "It was lovely."
+            }
+        ]
+    },
+    {
+        "restaurantName": "Le Cinq",
+        "address": "31 Avenue George V, 75008 Paris, France",
+        "lat": 48.873381,
+        "long": 2.299247,
+        "ratings": [
+            {
+                "stars": 4,
+                "comment": "Very good!"
+            },
+            {
+                "stars": 3,
+                "comment": "Meh, it was fine."
+            },
+            {
+                "stars": 4,
+                "comment": "Very good!"
+            },
+            {
+                "stars": 3,
+                "comment": "Meh, it was fine."
+            }
+        ]
+    },
+    {
+        "restaurantName": "Patchanka",
+        "address": "33-35 Rue Saint-Sébastien, 75011 Paris, France",
+        "lat": 48.861727,
+        "long": 2.370733,
+        "ratings": [
+            {
+                "stars": 2,
+                "comment": "Tiny"
+            },
+            {
+                "stars": 1,
+                "comment": "Smelly"
+            }
+        ]
+    },
+    {
+        "restaurantName": "Secret Picnic Paris",
+        "address": "14 Rue Frochot, 75009 Paris, France",
+        "lat": 48.882226,
+        "long": 2.337533,
+        "ratings": [
+            {
+                "stars": 5,
+                "comment": "Amazing service"
+            },
+            {
+                "stars": 4,
+                "comment": "Food was served fast"
+            },
+            {
+                "stars": 5,
+                "comment": "Very nice owners"
+            },
+            {
+                "stars": 5,
+                "comment": "Best place near the Eifel Tower"
+            }
+        ]
+    }
+]

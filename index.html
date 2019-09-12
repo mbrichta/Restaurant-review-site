@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Restaurant Reviews</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="css/mdb.min.css" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <style>
+        /* Set the size of the div element that contains the map */
+        #map {
+            height: 700px;
+            width: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header d-flex flex-column">
+        <video autoplay loop class="video-background" muted>
+            <source src="video/intro-video.mp4" type="video/mp4">
+        </video>
+        <nav class="navbar navbar-expand-lg">
+            <a class="navbar-brand" href="#">ReReview</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarTogglerDemo01">
+                <div>
+                    <button class="btn btn-md btn-outline-white" type="button">login</button>
+                    <button class="btn btn-md btn-rounded peach-gradient ml-0" type="button">Sign up</button>
+                </div>
+            </div>
+        </nav>
+        <div class="intro-text d-flex flex-fill white-text justify-content-center align-items-center">
+            <div class="text-center">
+                <h2>Restaurant Review</h2>
+                <form class="form-inline my-2 justify-content-center">
+                    <input id="search" class="form-control" type="search" placeholder="I'm looking for..."
+                        aria-label="Search">
+                    <button class="btn btn-md peach-gradient my-2 my-sm-0 ml-1 mr-3" type="submit"><i
+                            class="fas fa-search pl-1"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h4 class="text-center py-4">Featured restaurants</h4>
+
+        <!-- Grid row -->
+        <div class="d-flex">
+
+            <!-- Grid column -->
+            <div id="featuredCard1" class="col-lg-4 mb-4">
+
+                <!--Card-->
+
+                <!--/.Card-->
+
+            </div>
+            <!-- Grid column -->
+
+            <!-- Grid column -->
+            <div id="featuredCard2" class="col-lg-4 mb-4">
+                <!--Card-->
+
+                <!--/.Card-->
+            </div>
+            <!-- Grid column -->
+
+            <!-- Grid column -->
+            <div id="featuredCard3" class="col-lg-4 mb-4">
+
+            </div>
+            <!-- Grid column -->
+
+        </div>
+        <!-- Grid row -->
+        <h4 class="text-center py-4">Restaurants nearby</h4>
+        <!-- Grid row -->
+        <div class="row">
+            <div class="d-flex flex-column col-lg-8 mb-4">
+                <div id="map" class="mb-3 mt-3"></div>
+                <div id="leaveReview"></div>
+                <div id="newRestaurantForm"></div>
+                <div id="viewRestaurantReviews"></div>
+            </div>
+            <div id="cards" class="d-flex flex-column col-lg-4 "></div>
+        </div>
+    </div>
+
+
+
+    <!-- Start your project here
+    <nav class="navbar navbar-expand-lg navbar-dark indigo">
+        <a class="navbar-brand" href="#">ReReview</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarTogglerDemo01">
+            <form class=" form-inline my-2 my-lg-0 justify-content-center ">
+                <input class="form-control" type="search" placeholder="I'm looking for..." aria-label="Search">
+                <button class="btn btn-md peach-gradient my-2 my-sm-0 ml-1 mr-3" type="submit"><i
+                        class="fas fa-search pl-1"></i></button>
+            </form>
+
+            <div>
+                <button class="btn btn-md btn-outline-white" type="button">login</button>
+                <button class="btn btn-md btn-rounded peach-gradient ml-0" type="button">Sign up</button>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="d-flex">
+            <div class="d-flex flex-column">
+                <div id="map" class="mb-3 mt-3"></div>
+                <div id="leaveReview"></div>
+                <div id="newRestaurantForm"></div>
+            </div>
+            <div id="cards" class="d-flex flex-column col-sm-4"></div>
+        </div>
+    </div>
+-->
+
+    <!-- Start your project here-->
+
+    <!-- SCRIPTS -->
+    <script src="app.js"></script>
+    <!-- JQuery -->
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoAQ4L8sMWr2bLdH1CNA7GS44YoHskkFo&callback=initMap&libraries=places"
+        type="text/javascript"></script>
+</body>
+
+</html>
