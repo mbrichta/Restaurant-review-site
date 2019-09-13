@@ -51,9 +51,9 @@ function initMap() {
         infoWindow.setPosition(e.latLng)
         infoWindow.open(app.map)
     });
-
+    console.log(options.center)
     const request = {
-        location: new google.maps.LatLng(latLng.lat(), latLng.lng()),
+        location: new google.maps.LatLng(options.center),
         radius: '500',
         type: ['restaurant']
     };
@@ -75,7 +75,13 @@ const app = {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             for (var i = 0; i < results.length; i++) {
                 var place = results[i];
-                createMarker(results[i]);
+                const marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(place.geometry.location),
+                    map: this.map,
+                    title: place.name
+                });
+
+                this.markers.push(marker)
             }
         }
 
