@@ -1,41 +1,89 @@
-*
-{
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto auto auto auto auto;
+    grid-template-areas: 
+    "navbar navbar navbar"
+    "carousel carousel carousel"
+    "title1 title1 title1"
+    "map map nearbyCard1"
+    "map map nearbyCard2"
+    "title2 title2 title2"
+    "featuredCard1 featuredCard2 featuredCard3";
     margin: 0;
     padding: 0;
-}
-.header {
-    background: rgba(8, 8, 66, 0.4);
-    height: 100vh;
-}
-.intro-text {
-    vertical-align: middle;
-    border: 5px;
-    border-color: red;
-}
-.video-background {
-    position: absolute;
-    right: 0;
-    bottom: 0;
     min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    z-index: -1;
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
 }
 .restaurantCards {
-    height: 453px;
+    margin: 10px;
+    height: 100%;
+    border-radius: 15px;
 }
-@media (min-aspect-ratio:16/9)
-{
-    .video-background{
-        width: 100%;
-        height: auto;
+
+.btn {
+    border-radius: 5px;
+}
+
+.carousel {
+    grid-area: carousel;
+    height: 80vh;
+}
+.carousel-inner {
+    height: 100%;
+    width: 100%;
+}
+
+.title1 {
+    grid-area: title1;
+}
+.map{
+    margin: 10px;
+    grid-area: map;
+    border-radius: 15px;
+}
+.nearbyCard1 {
+    grid-area: nearbyCard1;
+}
+.nearbyCard2 {
+    grid-area: nearbyCard2;
+}
+.title2 {
+    grid-area: title2;
+}
+.featuredCard1{
+    grid-area: featuredCard1;
+}
+.featuredCard2{
+    grid-area: featuredCard2;
+}
+.featuredCard3{
+    grid-area: featuredCard3;
+}
+
+.navbar{
+    grid-area: navbar;
+    height: 70px;
+    margin-bottom: -10px;
+}
+.navbar .logo {
+    height: 100px;
+    margin: 0;
+}
+  /*
+@media screen and (min-width: 500px) {
+    .container {
+      grid-template-columns: 1fr;
     }
 }
-@media (max-aspect-ratio:16/9)
-{
-    .video-background{
-        width: auto;
-        height: 100%;
+
+@media screen and (min-width: 800px) {
+    .container {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 }
+*/
+
+

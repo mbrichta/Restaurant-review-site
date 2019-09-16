@@ -18,33 +18,21 @@
     <style>
         /* Set the size of the div element that contains the map */
         #map {
-            height: 700px;
+            height: auto;
             width: auto;
         }
     </style>
 </head>
 
 <body>
-    <div class="header d-flex flex-column">
-        <video autoplay loop class="video-background" muted>
-            <source src="video/intro-video.mp4" type="video/mp4">
-        </video>
-        <nav class="navbar navbar-expand-lg">
-            <a class="navbar-brand" href="#">ReReview</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarTogglerDemo01">
-                <div>
-                    <button class="btn btn-md btn-outline-white" type="button">login</button>
-                    <button class="btn btn-md btn-rounded peach-gradient ml-0" type="button">Sign up</button>
-                </div>
-            </div>
-        </nav>
-        <div class="intro-text d-flex flex-fill white-text justify-content-center align-items-center">
-            <div class="text-center">
-                <h2>Restaurant Review</h2>
+    <div class="container">
+
+        <!-- navbar (not working in small divices) -->
+        <nav class="navbar navbar-expand-lg navbar-expand-md navbar-expand-sm d-flex blue-gradient">
+            <a class="navbar-brand justify-content-start" href="#">
+                <img class="logo" src="img/logo.png">
+            </a>
+            <div class="d-flex flex-fill white-text justify-content-center align-items-center">
                 <form class="form-inline my-2 justify-content-center">
                     <input id="search" class="form-control" type="search" placeholder="I'm looking for..."
                         aria-label="Search">
@@ -52,56 +40,64 @@
                             class="fas fa-search pl-1"></i></button>
                 </form>
             </div>
+            <div class="justify-content-end" id="navbarTogglerDemo01">
+                <button class="btn btn-md btn-outline-white" type="button">login</button>
+                <button class="btn btn-md btn-rounded peach-gradient ml-0" type="button">Sign up</button>
+            </div>
+        </nav>
+        <!-- END navbar -->
+
+        <!-- carousel (img need to be centered within div) -->
+        <div id="carouselExampleFade" class="carousel slide carousel-fade z-depth-2" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#carousel-example-1z" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel-example-1z" data-slide-to="1"></li>
+                <li data-target="#carousel-example-1z" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active view">
+                    <img class="carousel-img img-fluid" src="img/carousel1.jpg" alt="First slide">
+                    <div class="mask flex-center rgba-blue-light"></div>
+                </div>
+                <div class="carousel-item view">
+                    <img class="carousel-img img-fluid" src="img/carousel2.jpg" alt="Second slide">
+                    <div class="mask flex-center rgba-blue-light"></div>
+                </div>
+                <div class="carousel-item view">
+                    <img class="carousel-img img-fluid" src="img/carousel3.jpg" alt="Third slide">
+                    <div class="mask flex-center rgba-blue-light"></div>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleFade" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
         </div>
+        <!-- END carousel -->
+
+        <h3 class="title1 text-center">Restaurants nearby</h3>
+
+        <div id="map" class="map z-depth-2"></div>
+        <div id="nearbyCard1" class="nearbyCard1"></div>
+        <div id="nearbyCard2" class="nearbyCard2"></div>
+
+        <!--
+            <div id="leaveReview"></div>
+            <div id="newRestaurantForm"></div>
+            <div id="viewRestaurantReviews"></div>
+        -->
+
+        <h3 class="title2 text-center">Featured restaurants</h3>
+
+        <div id="featuredCard1" class="featuredCard1"></div>
+        <div id="featuredCard2" class="featuredCard2"></div>
+        <div id="featuredCard3" class="featuredCard3"></div>
+
     </div>
-
-    <div class="container">
-
-        <h4 class="text-center py-4">Restaurants nearby</h4>
-        <!-- Grid row -->
-        <div class="row">
-            <div class="d-flex flex-column col-lg-8 mb-4">
-                <div id="map" class="mb-3 mt-3"></div>
-                <div id="leaveReview"></div>
-                <div id="newRestaurantForm"></div>
-                <div id="viewRestaurantReviews"></div>
-            </div>
-            <div id="cards" class="d-flex flex-column col-lg-4 "></div>
-        </div>
-
-        <h4 class="text-center py-4">Featured restaurants</h4>
-
-        <!-- Grid row -->
-        <div class="d-flex">
-
-            <!-- Grid column -->
-            <div id="featuredCard1" class="col-lg-4 mb-4">
-
-                <!--Card-->
-
-                <!--/.Card-->
-
-            </div>
-            <!-- Grid column -->
-
-            <!-- Grid column -->
-            <div id="featuredCard2" class="col-lg-4 mb-4">
-                <!--Card-->
-
-                <!--/.Card-->
-            </div>
-            <!-- Grid column -->
-
-            <!-- Grid column -->
-            <div id="featuredCard3" class="col-lg-4 mb-4">
-
-            </div>
-            <!-- Grid column -->
-
-        </div>
-        <!-- Grid row -->
-    </div>
-
     <!-- SCRIPTS -->
     <script src="app.js"></script>
     <!-- JQuery -->

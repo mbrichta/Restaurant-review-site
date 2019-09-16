@@ -10,7 +10,7 @@ function initMap() {
     const map = new google.maps.Map(document.getElementById('map'), options);
     app.map = map;
 
-    // Fetch Json
+    // Fetch Json for sample data
     fetch("restaurants.json").then(data => {
         return data.json()
     }).then(restaurants => {
@@ -24,15 +24,17 @@ function initMap() {
                 res.leaveRating(rating)
             }
 
-            app.createRestaurantCards(res, "cards")
             app.restaurants.push(res)
             app.addMarker(res)
             app.avgRating(res)
             app.displayFeturedRestaurants(res)
         });
     });
+
+    // searchbar recomendations 
     app.searchBox();
     // app.getMyLocation();
+
     // add new marker event listener
     app.map.addListener('click', function (e) {
 
@@ -40,7 +42,7 @@ function initMap() {
         const lng = e.latLng.lng()
         app.clickToAddRestaurantMarker(e.latLng);
 
-        //dunno how to listen for events on inforwindow for multiple buttons
+        //InfoWindow with two buttons
         const infoWindow = new google.maps.InfoWindow({
             content: '<div class="text-center">' +
                 `<button id="NewRestaurantBtn" onClick="app.createNewRestaurantForm(${lat}, ${lng})" class="btn btn-info  my-4" type="button">Create new Restaurant</button>` +
@@ -51,7 +53,8 @@ function initMap() {
         infoWindow.setPosition(e.latLng)
         infoWindow.open(app.map)
     });
-    console.log(options.center)
+    /* PLACESERVICE REQUEST. NOT WORKING!!
+
     const request = {
         location: new google.maps.LatLng(options.center),
         radius: '500',
@@ -59,7 +62,7 @@ function initMap() {
     };
     app.service = new google.maps.places.PlacesService(app.map);
     app.service.nearbySearch(request, app.serviceCallback());
-
+    */
 
 }
 
@@ -70,7 +73,10 @@ const app = {
     markers: [],
     featuredRestaurants: [],
     service: null,
+    nearbyRestaurants: [],
+    userPosition: null,
 
+    // ServiceCallback for PlaceService request. Adds Markers on map
     serviceCallback: function () {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             for (var i = 0; i < results.length; i++) {
@@ -84,10 +90,9 @@ const app = {
                 this.markers.push(marker)
             }
         }
-
-
     },
 
+    // Add marker when user clicks on Map
     clickToAddRestaurantMarker: function (latLng) {
         const marker = new google.maps.Marker({
             position: new google.maps.LatLng(latLng.lat(), latLng.lng()),
@@ -99,13 +104,14 @@ const app = {
         this.map.panTo(latLng);
     },
 
+    // Delete (last) Marker if user cancels on InfoWindow
     deleteLastMarker: function () {
         const marker = app.markers.pop()
         marker.setMap(null)
     },
 
+    // Displays featured restaurants 
     displayFeturedRestaurants: function (restaurant) {
-
 
         if (this.avgRating(restaurant) > 4) {
 
@@ -115,6 +121,7 @@ const app = {
         }
     },
 
+    // Display restaurants reviews
     displayRestaurantReviews: function (res, displayLocation) {
 
         const div = document.getElementById(displayLocation);
@@ -135,18 +142,25 @@ const app = {
         div.innerHTML = innerHtml
     },
 
+    // Gets user geolocation
     getMyLocation: function () {
         const infoWindow = new google.maps.InfoWindow;
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((position) => {
-                var pos = {
+                const pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
                 };
+                app.userPosition = pos;
+                const image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+                const marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(pos),
+                    map: this.map,
+                    title: 'You are here',
+                    icon: image
+                });
 
                 infoWindow.setPosition(pos);
-                infoWindow.setContent('Location found.');
-                infoWindow.open(map);
                 this.map.panTo(pos);
             }, function () {
                 handleLocationError(true, infoWindow, this.map.getCenter(), this.map);
@@ -161,19 +175,30 @@ const app = {
             infoWindow.setContent(browserHasGeolocation ?
                 'Error: The Geolocation service failed.' :
                 'Error: Your browser doesn\'t support geolocation.');
-            infoWindow.open(map);
+            infoWindow.open(app.map);
         }
     },
 
+    // Displays nearby restaurants NOT WORKING!!
+    displayNearbyRestaurants: function (restaurant) {
+        if (restaurant) {
+            this.featuredRestaurants.push(restaurant);
+            this.featuredRestaurants.slice(0, 1);
+            this.createRestaurantCards(restaurant, `nearbyCard1`)
+            this.createRestaurantCards(restaurant, `nearbyCard2`)
+        }
+    },
+
+    // Creates Restaurants cards
     createRestaurantCards: function (restaurant, div) {
         var col = document.getElementById(div);
         var card = document.createElement('div');
         var cardImg = document.createElement('div');
         var cardBody = document.createElement('div');
 
-        card.className = 'restaurantCards card-cascade wider mt-3 mb-3'
-        cardImg.className = 'view view-cascade overlay'
-        cardBody.className = 'card-body card-body-cascade indigo'
+        card.className = 'restaurantCards'
+        cardImg.className = 'view view-cascade'
+        cardBody.className = 'card-body card-body-cascade blue-gradient'
 
         cardImg.innerHTML = `<img class="card-img-top"
                                 src="https://mdbootstrap.com/img/Photos/Lightbox/Thumbnail/img%20(147).jpg"
@@ -198,11 +223,15 @@ const app = {
         const info = document.getElementById('moreInfo' + restaurant.restaurantName);
 
         info.addEventListener('click', function () {
+            /* This should take you to the restaurants page. Not sure how I should do it. 
+                Should I dynamically create new HTML page or is there another way?? */
 
-            app.displayRestaurantReviews(restaurant, "viewRestaurantReviews")
+            app.createRestaurantPage()
+            // app.displayRestaurantReviews(restaurant, "viewRestaurantReviews")
         })
     },
 
+    // Returns AVG star rating in icons
     displayAvgRating: function (avg) {
         let star = '<i class="fas fa-star"></i> ';
         let halfstar = '<i class="fas fa-star-half"></i> ';
@@ -243,30 +272,32 @@ const app = {
         return starsHTML;
     },
 
-    displayRating: function (sr) {
+    // Returns star rating in icons
+    displayRating: function (starRating) {
         let star = '<i class="fas fa-star"></i> ';
         let starsHTML;
 
         switch (true) {
-            case (sr === 1):
+            case (starRating === 1):
                 starsHTML = star;
                 break;
-            case (sr === 2):
+            case (starRating === 2):
                 starsHTML = star + star;
                 break;
-            case (sr === 3):
+            case (starRating === 3):
                 starsHTML = star + star + star;
                 break;
-            case (sr === 4):
+            case (starRating === 4):
                 starsHTML = star + star + star + star;
                 break;
-            case (sr === 5):
+            case (starRating === 5):
                 starsHTML = star + star + star + star + star;
                 break;
         }
         return starsHTML;
     },
 
+    // Returns avg rating
     avgRating: function (restaurant) {
         let total = 0;
         let num = 0;
@@ -278,6 +309,7 @@ const app = {
         return avg = total / num;
     },
 
+    // Adds marker to map
     addMarker: function (restaurant) {
         const marker = new google.maps.Marker({
             position: new google.maps.LatLng(restaurant.lat, restaurant.long),
@@ -291,12 +323,12 @@ const app = {
         });
     },
 
+    // Form to leave a restaurant rating NEED WORK
     leaveReviewForm: function (restaurantName) {
         const form = document.getElementById("leaveReview");
         form.innerHTML = '<form class="text-center border border-light p-5" action="#!">' +
             '<p class="h4 mb-4">Leave Review</p>' +
             '<input name="rating" type="text" id="defaultContactFormName" class="form-control mb-4" placeholder="Name">' +
-            '<input type="email" id="defaultContactFormEmail" class="form-control mb-4" placeholder="E-mail">' +
             '<div class="d-flex mb-1">' +
             '<div class="custom-control custom-radio mr-3">' +
             '<input name="rating" type="radio" value="1" class="custom-control-input" id="defaultGroupExample1">' +
@@ -320,7 +352,7 @@ const app = {
             '</div>' +
             '</div>' +
             '<div class="form-group">' +
-            '<textarea class="form-control rounded-0" id="exampleFormControlTextarea2" rows="3" placeholder="Feedback"></textarea>' +
+            '<textarea class="form-control rounded-0" id="comments" rows="3" placeholder="Feedback"></textarea>' +
             '</div>' +
             '<div class="custom-control custom-checkbox mb-4">' +
             '<input type="checkbox" class="custom-control-input" id="defaultContactFormCopy">' +
@@ -340,7 +372,7 @@ const app = {
             })
 
             const stars = document.querySelector('input[name="rating"]:checked').value;
-            const message = document.getElementById("exampleFormControlTextarea2").value;
+            const message = document.getElementById("comments").value;
             const rating = new Rating(parseInt(stars, 10), message);
             res.leaveRating(rating)
 
@@ -353,6 +385,7 @@ const app = {
         }
     },
 
+    // Creates restaurant object and add it to restaurants array, returns restaurant
     createNewRestaurant: function (restaurantName, address, lat, lng) {
 
         const restaurant = new Restaurant(restaurantName, address, lat, lng)
@@ -360,6 +393,7 @@ const app = {
         return restaurant;
     },
 
+    // For to create new Restaurants NEEDS WORK. 
     createNewRestaurantForm: function (lat, lng) {
         const form = document.getElementById("newRestaurantForm");
         form.innerHTML = `<form class="border border-light p-5">
@@ -417,6 +451,13 @@ const app = {
         }
     },
 
+    // Creates new Restaurant HTML file (TEST) 
+    createRestaurantPage: function () {
+        var opened = window.open("");
+        opened.document.write("<html><head><title>MyTitle</title></head><body>test</body></html>");
+    },
+
+    // Google searbox recomendations based on map bounds. Has an error displaying markers.
     searchBox: function () {
         const input = document.getElementById("search");
         const searchBox = new google.maps.places.SearchBox(input);
@@ -431,11 +472,6 @@ const app = {
             if (places.length === 0) {
                 return;
             }
-
-            app.markers.forEach(function (marker) {
-                marker.setMap(null);
-            });
-            this.markers = [];
 
             const bounds = new google.maps.LatLngBounds();
 
@@ -483,3 +519,21 @@ class Rating {
         this.comment = comment;
     }
 }
+
+// Solution I found on StackOverflow to solve getMyLocation() error. 
+window.addEventListener('load', function () {
+    app.createRestaurantCards(app.restaurants[2], `nearbyCard1`)
+    app.createRestaurantCards(app.restaurants[3], `nearbyCard2`)
+
+    /*
+    app.getMyLocation();
+    const request = {
+        location: new google.maps.LatLng(48.8737815, 2.3442197),
+        radius: '500',
+        type: ['restaurant']
+    };
+    app.service = new google.maps.places.PlacesService(app.map);
+    app.service.nearbySearch(request, app.serviceCallback());
+    */
+})
+
