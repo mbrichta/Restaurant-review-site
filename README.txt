@@ -1,5 +1,4 @@
 # Restaurant-review-site
-Openclassrooms: Project 7
 
 Things I need help with:
   -PlaceService error: Uncaught TypeError: b is not a function.
