@@ -2,7 +2,7 @@
 
 Things I need help with:
   -PlaceService error: Uncaught TypeError: b is not a function.
-  -Not sure how i should create single restaurant page. 
+  -Not sure how is the best way to create a single restaurant page. 
   
 To-Do's (there's probably more):
   -Create single Restaurant page with places API. Get detailed info with placeID
