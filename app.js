@@ -53,20 +53,19 @@ function initMap() {
         infoWindow.setPosition(e.latLng)
         infoWindow.open(app.map)
     });
-    /* PLACESERVICE REQUEST. NOT WORKING!!
-
-    const request = {
-        location: new google.maps.LatLng(options.center),
+    /* PLACESERVICE REQUEST. */
+    var request = {
+        location: options.center,
         radius: '500',
         type: ['restaurant']
     };
-    app.service = new google.maps.places.PlacesService(app.map);
-    app.service.nearbySearch(request, app.serviceCallback());
-    */
+
+    service = new google.maps.places.PlacesService(app.map);
+    service.nearbySearch(request, app.serviceCallback);
 
 }
 
-const app = {
+var app = {
 
     restaurants: [],
     map: null,
@@ -77,19 +76,23 @@ const app = {
     userPosition: null,
 
     // ServiceCallback for PlaceService request. Adds Markers on map
-    serviceCallback: function () {
+    serviceCallback: function (results, status) {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             for (var i = 0; i < results.length; i++) {
                 var place = results[i];
+                console.log(place);
                 const marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(place.geometry.location),
-                    map: this.map,
+                    position: place.geometry.location,
+                    map: app.map,
                     title: place.name
                 });
-
-                this.markers.push(marker)
+                app.markers.push(marker)
             }
+        } else {
+            alert(status);
         }
+
+        app.createRestaurantPage(results[0].name);
     },
 
     // Add marker when user clicks on Map
@@ -196,7 +199,7 @@ const app = {
         var cardImg = document.createElement('div');
         var cardBody = document.createElement('div');
 
-        card.className = 'restaurantCards'
+        card.className = 'restaurantCards z-depth-2'
         cardImg.className = 'view view-cascade'
         cardBody.className = 'card-body card-body-cascade blue-gradient'
 
@@ -452,9 +455,51 @@ const app = {
     },
 
     // Creates new Restaurant HTML file (TEST) 
-    createRestaurantPage: function () {
-        var opened = window.open("");
-        opened.document.write("<html><head><title>MyTitle</title></head><body>test</body></html>");
+    createRestaurantPage: function (restaurantName) {
+
+        let opened = window.open();
+        opened.document.write("<!DOCTYPE html><html lang='en'><head></head></html>");
+        opened.head.innerHTML = `<meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+                            <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                            <title>${restaurantName}</title>
+                            <!-- Font Awesome -->
+                            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+                            <!-- Bootstrap core CSS -->
+                            <link href="css/bootstrap.min.css" rel="stylesheet">
+                            <!-- Material Design Bootstrap -->
+                            <link href="css/mdb.min.css" rel="stylesheet">
+                            <!-- Your custom styles (optional) -->
+                            <link href="css/style.css" rel="stylesheet">`;
+
+        opened.body.innerHTML = `<div class="wrapper">
+                            <nav class="navbar navbar-expand-lg navbar-expand-md navbar-expand-sm d-flex blue-gradient">
+                            <a class="navbar-brand justify-content-start" href="#">
+                            <img class="logo" src="img/logo.png">
+                            </a>
+                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="d-flex flex-fill white-text justify-content-center align-items-center">
+                            <form class="form-inline my-2 justify-content-center">
+                            <input id="search" class="form-control" type="search" placeholder="I'm looking for..." aria-label="Search">
+                            <button class="btn btn-md peach-gradient my-2 my-sm-0 ml-1 mr-3" type="submit"><i class="fas fa-search pl-1"></i></button>
+                            </form>
+                            </div>
+                            <div class="justify-content-end" id="navbarTogglerDemo01">
+                            <button class="btn btn-md btn-outline-white" type="button">login</button>
+                            <button class="btn btn-md btn-rounded peach-gradient ml-0" type="button">Sign up</button>
+                            </div>
+                            </nav>
+                            </div>
+                            
+                            <div class="placePhotos"></div>
+                            <div class="streetView"></div>
+                            <div class="placeInfo d-flex">
+                                <h3 class="placeName">${restaurantName}</h3>
+                            </div>`
+
+        console.log(doc)
     },
 
     // Google searbox recomendations based on map bounds. Has an error displaying markers.
@@ -535,5 +580,6 @@ window.addEventListener('load', function () {
     app.service = new google.maps.places.PlacesService(app.map);
     app.service.nearbySearch(request, app.serviceCallback());
     */
+    app.createRestaurantPage("nerRes");
 })
 

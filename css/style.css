@@ -40,9 +40,17 @@
     grid-area: title1;
 }
 .map{
+    height: auto;
+    width: auto;
     margin: 10px;
     grid-area: map;
     border-radius: 15px;
+}
+.card-img-top{
+    border-radius: 15px 15px 0 0;
+}
+.card-body{
+    border-radius: 0 0 15px 15px;
 }
 .nearbyCard1 {
     grid-area: nearbyCard1;
@@ -87,3 +95,12 @@
 */
 
 
+.wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 100px;
+    grid-template-areas: 
+    "navbar navbar"
+    "placePhotos streetView"
+    "placeInfo placeInfo";
+}

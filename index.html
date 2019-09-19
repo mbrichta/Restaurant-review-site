@@ -14,14 +14,6 @@
     <link href="css/mdb.min.css" rel="stylesheet">
     <!-- Your custom styles (optional) -->
     <link href="css/style.css" rel="stylesheet">
-
-    <style>
-        /* Set the size of the div element that contains the map */
-        #map {
-            height: auto;
-            width: auto;
-        }
-    </style>
 </head>
 
 <body>
@@ -32,6 +24,11 @@
             <a class="navbar-brand justify-content-start" href="#">
                 <img class="logo" src="img/logo.png">
             </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
             <div class="d-flex flex-fill white-text justify-content-center align-items-center">
                 <form class="form-inline my-2 justify-content-center">
                     <input id="search" class="form-control" type="search" placeholder="I'm looking for..."
@@ -56,15 +53,15 @@
             </ol>
             <div class="carousel-inner">
                 <div class="carousel-item active view">
-                    <img class="carousel-img img-fluid" src="img/carousel1.jpg" alt="First slide">
+                    <img class="carousel-img" src="img/carousel1.jpg" alt="First slide">
                     <div class="mask flex-center rgba-blue-light"></div>
                 </div>
                 <div class="carousel-item view">
-                    <img class="carousel-img img-fluid" src="img/carousel2.jpg" alt="Second slide">
+                    <img class="carousel-img" src="img/carousel2.jpg" alt="Second slide">
                     <div class="mask flex-center rgba-blue-light"></div>
                 </div>
                 <div class="carousel-item view">
-                    <img class="carousel-img img-fluid" src="img/carousel3.jpg" alt="Third slide">
+                    <img class="carousel-img" src="img/carousel3.jpg" alt="Third slide">
                     <div class="mask flex-center rgba-blue-light"></div>
                 </div>
             </div>
