@@ -17,35 +17,28 @@
 </head>
 
 <body>
-    <div class="container">
-
-        <!-- navbar (not working in small divices) -->
-        <nav class="navbar navbar-expand-lg navbar-expand-md navbar-expand-sm d-flex blue-gradient">
-            <a class="navbar-brand justify-content-start" href="#">
-                <img class="logo" src="img/logo.png">
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
-                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="d-flex flex-fill white-text justify-content-center align-items-center">
-                <form class="form-inline my-2 justify-content-center">
-                    <input id="search" class="form-control" type="search" placeholder="I'm looking for..."
-                        aria-label="Search">
-                    <button class="btn btn-md peach-gradient my-2 my-sm-0 ml-1 mr-3" type="submit"><i
-                            class="fas fa-search pl-1"></i></button>
-                </form>
-            </div>
-            <div class="justify-content-end" id="navbarTogglerDemo01">
-                <button class="btn btn-md btn-outline-white" type="button">login</button>
-                <button class="btn btn-md btn-rounded peach-gradient ml-0" type="button">Sign up</button>
-            </div>
-        </nav>
-        <!-- END navbar -->
-
+    <!-- navbar (not working in small divices) -->
+    <nav class="navbar blue-gradient">
+        <a class="navbar-brand justify-content-start" href="#">
+            <img class="logo" src="img/logo.png">
+        </a>
+        <div class="d-flex flex-fill white-text justify-content-center align-items-center">
+            <form class="form-inline my-2 justify-content-center">
+                <input id="search" class="form-control" type="search" placeholder="I'm looking for..."
+                    aria-label="Search">
+                <button class="btn btn-md peach-gradient my-2 my-sm-0 ml-1 mr-3" type="submit"><i
+                        class="fas fa-search pl-1"></i></button>
+            </form>
+        </div>
+        <div class="justify-content-end" id="navbarTogglerDemo01">
+            <button class="btn btn-md btn-outline-white" type="button">login</button>
+            <button class="btn btn-md btn-rounded peach-gradient ml-0" type="button">Sign up</button>
+        </div>
+    </nav>
+    <!-- END navbar -->
+    <div id="container" class="container">
         <!-- carousel (img need to be centered within div) -->
-        <div id="carouselExampleFade" class="carousel slide carousel-fade z-depth-2" data-ride="carousel">
+        <div id="carouselExampleFade" class="carousel carousel-main slide carousel-fade z-depth-2" data-ride="carousel">
             <ol class="carousel-indicators">
                 <li data-target="#carousel-example-1z" data-slide-to="0" class="active"></li>
                 <li data-target="#carousel-example-1z" data-slide-to="1"></li>
@@ -76,23 +69,23 @@
         </div>
         <!-- END carousel -->
 
-        <h3 class="title1 text-center">Restaurants nearby</h3>
-
-        <div id="map" class="map z-depth-2"></div>
-        <div id="nearbyCard1" class="nearbyCard1"></div>
-        <div id="nearbyCard2" class="nearbyCard2"></div>
-
-        <!--
-            <div id="leaveReview"></div>
-            <div id="newRestaurantForm"></div>
-            <div id="viewRestaurantReviews"></div>
-        -->
-
         <h3 class="title2 text-center">Featured restaurants</h3>
 
         <div id="featuredCard1" class="featuredCard1"></div>
         <div id="featuredCard2" class="featuredCard2"></div>
         <div id="featuredCard3" class="featuredCard3"></div>
+
+        <h3 class="title1 text-center">Nearest Restaurants</h3>
+
+        <div id="map" class="map z-depth-2"></div>
+        <div id="nearbyCard1" class="nearbyCard1"></div>
+        <div id="nearbyCard2" class="nearbyCard2"></div>
+        <!--
+            <div id="leaveReview"></div>
+            <div id="newRestaurantForm"></div>
+            <div id="viewRestaurantReviews"></div>
+        -->
+        <h3 class="title3 text-center">Restaurants nearby</h3>
 
     </div>
     <!-- SCRIPTS -->
@@ -106,7 +99,7 @@
     <!-- MDB core JavaScript -->
     <script type="text/javascript" src="js/mdb.min.js"></script>
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoAQ4L8sMWr2bLdH1CNA7GS44YoHskkFo&callback=initMap&libraries=places"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBz8gveVxcnSt9h1IFfUNv7EhTNd4dWmTQ&callback=initMap&libraries=places"
         type="text/javascript"></script>
 </body>
 

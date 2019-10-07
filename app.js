@@ -1,14 +1,51 @@
 
 function initMap() {
     // Initial location of map
-    const options = {
-        zoom: 12,
+    let options = {
+        zoom: 16,
         center: { lat: 48.8737815, lng: 2.3442197 },
     }
 
     // The map, centered at Paris
     const map = new google.maps.Map(document.getElementById('map'), options);
     app.map = map;
+
+    const infoWindow = new google.maps.InfoWindow;
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            app.userPosition = pos;
+            const image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+            const marker = new google.maps.Marker({
+                position: new google.maps.LatLng(pos),
+                map: app.map,
+                title: 'You are here',
+                icon: image
+            });
+
+            //options.center.lat = pos.lat;
+            //options.center.lng = pos.lng;
+            app.markers.push(marker)
+            infoWindow.setPosition(pos);
+            //app.map.panTo(pos);
+        }, function () {
+            handleLocationError(true, infoWindow, this.map.getCenter(), this.map);
+        });
+    } else {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, this.map.getCenter(), this.map);
+    }
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos, map) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+            'Error: The Geolocation service failed.' :
+            'Error: Your browser doesn\'t support geolocation.');
+        infoWindow.open(app.map);
+    }
 
     // Fetch Json for sample data
     fetch("restaurants.json").then(data => {
@@ -17,16 +54,16 @@ function initMap() {
         restaurants.forEach(restaurant => {
 
             // new Restaurant Object
-            const res = new Restaurant(restaurant.restaurantName, restaurant.address, restaurant.lat, restaurant.long)
+            const res = new Restaurant(restaurant.restaurantName, restaurant.address, restaurant.Id, restaurant.lat, restaurant.long, restaurant.rating, restaurant.photoUrl)
 
             // add Ratings
             for (const rating of restaurant.ratings) {
-                res.leaveRating(rating)
+                res.leaveRating(rating.stars, rating.comment)
             }
 
             app.restaurants.push(res)
             app.addMarker(res)
-            app.avgRating(res)
+            res.rating = app.avgRating(res)
             app.displayFeturedRestaurants(res)
         });
     });
@@ -80,19 +117,23 @@ var app = {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             for (var i = 0; i < results.length; i++) {
                 var place = results[i];
-                console.log(place);
                 const marker = new google.maps.Marker({
                     position: place.geometry.location,
                     map: app.map,
                     title: place.name
                 });
-                app.markers.push(marker)
+                if (place && place.photos) {
+                    app.markers.push(marker)
+                    let restaurant = new Restaurant(
+                        place.name, place.vicinity, place.place_id, place.geometry.location.lat(), place.geometry.location.lng(), place.rating, place.photos[0].getUrl())
+
+                    app.nearbyRestaurants.push(restaurant);
+                }
             }
         } else {
             alert(status);
         }
-
-        app.createRestaurantPage(results[0].name);
+        app.displayNearbyRestaurants();
     },
 
     // Add marker when user clicks on Map
@@ -116,8 +157,7 @@ var app = {
     // Displays featured restaurants 
     displayFeturedRestaurants: function (restaurant) {
 
-        if (this.avgRating(restaurant) > 4) {
-
+        if (restaurant.rating > 4) {
             this.featuredRestaurants.push(restaurant);
             this.featuredRestaurants.slice(0, 3);
             this.createRestaurantCards(restaurant, `featuredCard${this.featuredRestaurants.length}`)
@@ -126,16 +166,16 @@ var app = {
 
     // Display restaurants reviews
     displayRestaurantReviews: function (res, displayLocation) {
-
+        let ratings = res.ratings;
         const div = document.getElementById(displayLocation);
         let innerHtml = `<h1 class="text-center"> ${res.restaurantName} Reviews</h1>`;
-
-        for (const review of res.ratings) {
-
+        console.log(res.ratings[0])
+        for (const r of res.ratings) {
+            console.log(res.ratings)
             const ratings = `<div class="card mb-2">
                             <div class="card-body">
-                            <h6 class="card-title orange-text pb-2 pt-1">${app.displayRating(review.stars)}</h6>
-                            <p class="card-text font-weight-bolder">"${review.comment}"</p>
+                            <h6 class="card-title orange-text pb-2 pt-1">${app.displayRating(res.ratings[i].stars)}</h6>
+                            <p class="card-text font-weight-bolder">"${res.ratings[i].comment}"</p>
                             </div>
                             </div>`;
 
@@ -183,17 +223,24 @@ var app = {
     },
 
     // Displays nearby restaurants NOT WORKING!!
-    displayNearbyRestaurants: function (restaurant) {
-        if (restaurant) {
-            this.featuredRestaurants.push(restaurant);
-            this.featuredRestaurants.slice(0, 1);
-            this.createRestaurantCards(restaurant, `nearbyCard1`)
-            this.createRestaurantCards(restaurant, `nearbyCard2`)
+    displayNearbyRestaurants: function () {
+        this.createRestaurantCards(this.nearbyRestaurants[0], `nearbyCard1`)
+        this.createRestaurantCards(this.nearbyRestaurants[1], `nearbyCard2`)
+
+        for (let i = 2; i < this.nearbyRestaurants.length; i++) {
+            const div = document.createElement('div');
+            const container = document.getElementById('container');
+            div.className = `placeResult-${i}`;
+            div.id = `placeResult-${i}`
+            container.appendChild(div)
+            this.createRestaurantCards(this.nearbyRestaurants[i], div.id)
         }
+
     },
 
     // Creates Restaurants cards
     createRestaurantCards: function (restaurant, div) {
+        if (restaurant == null) return;
         var col = document.getElementById(div);
         var card = document.createElement('div');
         var cardImg = document.createElement('div');
@@ -201,16 +248,16 @@ var app = {
 
         card.className = 'restaurantCards z-depth-2'
         cardImg.className = 'view view-cascade'
-        cardBody.className = 'card-body card-body-cascade blue-gradient'
+        cardBody.className = 'card-body card-body-restaurants card-body-cascade blue-gradient'
 
-        cardImg.innerHTML = `<img class="card-img-top"
-                                src="https://mdbootstrap.com/img/Photos/Lightbox/Thumbnail/img%20(147).jpg"
+        cardImg.innerHTML = `<img class="card-img-top img-fluid"
+                                src="${restaurant.photoUrl}"
                                 alt="Card image cap">
                             <a>
                                 <div class="mask rgba-white-slight"></div>
                             </a>`
 
-        cardBody.innerHTML = `<h5 class="orange-text pb-2 pt-1">${app.displayAvgRating(app.avgRating(restaurant))}</h5>
+        cardBody.innerHTML = `<h5 class="orange-text pb-2 pt-1">${app.displayAvgRating(restaurant.rating)}</h5>
                               <h4 id="restaurantName" class="font-weight-bold card-title text-white">${restaurant.restaurantName}</h4>
                               <p class="card-text text-white">${restaurant.address}</p>
                               <div class="d-flex justify-content-around align-self-end">
@@ -229,7 +276,7 @@ var app = {
             /* This should take you to the restaurants page. Not sure how I should do it. 
                 Should I dynamically create new HTML page or is there another way?? */
 
-            app.createRestaurantPage()
+            app.createRestaurantPage(restaurant)
             // app.displayRestaurantReviews(restaurant, "viewRestaurantReviews")
         })
     },
@@ -241,6 +288,9 @@ var app = {
         let starsHTML;
 
         switch (true) {
+            case (avg == null):
+                starsHTML = 'No data <i class="far fa-frown"></i>';
+                break;
             case (avg < 1):
                 starsHTML = halfstar;
                 break;
@@ -327,11 +377,11 @@ var app = {
     },
 
     // Form to leave a restaurant rating NEED WORK
-    leaveReviewForm: function (restaurantName) {
+    leaveReviewForm: function (restaurant) {
         const form = document.getElementById("leaveReview");
         form.innerHTML = '<form class="text-center border border-light p-5" action="#!">' +
             '<p class="h4 mb-4">Leave Review</p>' +
-            '<input name="rating" type="text" id="defaultContactFormName" class="form-control mb-4" placeholder="Name">' +
+            '<input name="rating" type="text" id="authors-name" class="form-control mb-4" placeholder="Name">' +
             '<div class="d-flex mb-1">' +
             '<div class="custom-control custom-radio mr-3">' +
             '<input name="rating" type="radio" value="1" class="custom-control-input" id="defaultGroupExample1">' +
@@ -369,15 +419,10 @@ var app = {
 
         document.getElementById("leaveReviewBtn").onclick = function () {
 
-            const res = app.restaurants.find(function (restaurant) {
-
-                return restaurant.restaurantName === restaurantName;
-            })
-
-            const stars = document.querySelector('input[name="rating"]:checked').value;
+            const authorName = document.getElementById("authors-name").value
+            const stars = Number(document.querySelector('input[name="rating"]:checked').value);
             const message = document.getElementById("comments").value;
-            const rating = new Rating(parseInt(stars, 10), message);
-            res.leaveRating(rating)
+            restaurant.leaveRating(stars, message, authorName)
 
             form.innerHTML = `<div class="alert alert-primary" role="alert">
             Thanks for leaving your Review
@@ -386,14 +431,6 @@ var app = {
             </button>
             </div>`
         }
-    },
-
-    // Creates restaurant object and add it to restaurants array, returns restaurant
-    createNewRestaurant: function (restaurantName, address, lat, lng) {
-
-        const restaurant = new Restaurant(restaurantName, address, lat, lng)
-        this.restaurants.push(restaurant)
-        return restaurant;
     },
 
     // For to create new Restaurants NEEDS WORK. 
@@ -454,52 +491,151 @@ var app = {
         }
     },
 
-    // Creates new Restaurant HTML file (TEST) 
-    createRestaurantPage: function (restaurantName) {
+    // Creates new Restaurant page
+    createRestaurantPage: function (restaurant) {
+        // get container, change class for CSS grid, clear innerHTML
+        const container = document.getElementById('container');
+        container.className = 'container2';
+        container.innerHTML = "";
+        // create streetView div, assign id and classname 
+        const streetViewDiv = document.createElement('div');
+        streetViewDiv.id = "streetView";
+        streetViewDiv.className = 'streetView';
 
-        let opened = window.open();
-        opened.document.write("<!DOCTYPE html><html lang='en'><head></head></html>");
-        opened.head.innerHTML = `<meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-                            <meta http-equiv="X-UA-Compatible" content="ie=edge">
-                            <title>${restaurantName}</title>
-                            <!-- Font Awesome -->
-                            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-                            <!-- Bootstrap core CSS -->
-                            <link href="css/bootstrap.min.css" rel="stylesheet">
-                            <!-- Material Design Bootstrap -->
-                            <link href="css/mdb.min.css" rel="stylesheet">
-                            <!-- Your custom styles (optional) -->
-                            <link href="css/style.css" rel="stylesheet">`;
+        // create mapDiv div, assign id and classname 
+        const mapDiv = document.createElement('div');
+        mapDiv.id = "mapDiv";
+        mapDiv.className = 'mapDiv';
 
-        opened.body.innerHTML = `<div class="wrapper">
-                            <nav class="navbar navbar-expand-lg navbar-expand-md navbar-expand-sm d-flex blue-gradient">
-                            <a class="navbar-brand justify-content-start" href="#">
-                            <img class="logo" src="img/logo.png">
-                            </a>
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                            </button>
-                            <div class="d-flex flex-fill white-text justify-content-center align-items-center">
-                            <form class="form-inline my-2 justify-content-center">
-                            <input id="search" class="form-control" type="search" placeholder="I'm looking for..." aria-label="Search">
-                            <button class="btn btn-md peach-gradient my-2 my-sm-0 ml-1 mr-3" type="submit"><i class="fas fa-search pl-1"></i></button>
-                            </form>
-                            </div>
-                            <div class="justify-content-end" id="navbarTogglerDemo01">
-                            <button class="btn btn-md btn-outline-white" type="button">login</button>
-                            <button class="btn btn-md btn-rounded peach-gradient ml-0" type="button">Sign up</button>
-                            </div>
-                            </nav>
-                            </div>
-                            
-                            <div class="placePhotos"></div>
-                            <div class="streetView"></div>
-                            <div class="placeInfo d-flex">
-                                <h3 class="placeName">${restaurantName}</h3>
-                            </div>`
+        // create aboutDiv div, assign id and classname 
+        const aboutDiv = document.createElement('div');
+        aboutDiv.id = "aboutDiv";
+        aboutDiv.className = 'aboutDiv';
 
-        console.log(doc)
+        // create aboutDiv div, assign id and classname 
+        const photosDiv = document.createElement('div');
+        photosDiv.id = "photosDiv";
+        photosDiv.className = 'photosDiv';
+
+        // create aboutDiv div, assign id and classname 
+        const viewRestaurantReviews = document.createElement('div');
+        viewRestaurantReviews.id = "viewRestaurantReviews";
+        viewRestaurantReviews.className = 'viewRestaurantReviews';
+
+        // create aboutDiv div, assign id and classname 
+        const leaveReviewsDiv = document.createElement('div');
+        leaveReviewsDiv.id = "leaveReview";
+        leaveReviewsDiv.className = 'leaveReview';
+
+        // append divs
+        container.appendChild(streetViewDiv);
+        container.appendChild(mapDiv);
+        container.appendChild(aboutDiv);
+        container.appendChild(photosDiv);
+        container.appendChild(viewRestaurantReviews);
+        container.appendChild(leaveReviewsDiv);
+
+        // create steetView object 
+        var panorama = new google.maps.StreetViewPanorama(
+            document.getElementById('streetView'), {
+            position: new google.maps.LatLng(restaurant.lat, restaurant.long),
+            pov: {
+                heading: 34,
+                pitch: 10
+            }
+        });
+        this.map.setStreetView(panorama);
+
+        // create new map, dont know how to use the sameone... map not loading!!
+        let options = {
+            zoom: 16,
+            center: { lat: restaurant.lat, lng: restaurant.long },
+        }
+        const map = new google.maps.Map(mapDiv, options);
+
+        var request = {
+            placeId: restaurant.Id,
+            fields: ['formatted_phone_number', 'photo', 'opening_hours', 'website', 'type', 'reviews', 'user_ratings_total', 'icon']
+        };
+
+        service = new google.maps.places.PlacesService(map);
+        service.getDetails(request, callback);
+
+        function callback(place, status) {
+            if (status == google.maps.places.PlacesServiceStatus.OK) {
+                //create marker.
+                console.log(place)
+                const marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(restaurant.lat, restaurant.long),
+                    map: map,
+                    title: restaurant.restaurantName
+                });
+
+                let dropdownItem = '';
+
+                for (let i = 0; i < place.opening_hours.weekday_text.length; i++) {
+                    dropdownItem += `<a class="dropdown-item" href="#">${place.opening_hours.weekday_text[i]}</a><div class="dropdown-divider"></div>`;
+                }
+
+                const dropdown = `<a class="btn peach-gradient dropdown-toggle mr-4" type="button" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false"><i class="far fa-calendar-alt"></i></i> Opening hours: </a>
+                                <div class="dropdown-menu">
+                                ${dropdownItem}
+                                </div>`;
+
+                aboutDiv.innerHTML = `<div class="aboutCard blue-gradient">
+                                    <div class="card-body aboutCard blue-gradient">
+                                    <h2 class="text-white">${restaurant.restaurantName}</h2><h4 class="orange-text">${app.displayAvgRating(restaurant.rating)}</h4>
+                                    <ul class="list-group list-group-flush">
+                                    <li class="list-group-item text-white"><i class="fas fa-map-marker-alt"></i> ${restaurant.address}</li>
+                                    <li class="list-group-item text-white"><i class="fas fa-phone"></i> ${place.formatted_phone_number}</li>
+                                    </ul>
+                                    <button onclick="window.location.href = '${place.website}';" class="btn peach-gradient" type="button">Go to Website</button> ${dropdown}
+                                    </div>
+                                    </div>`;
+                let carouselImg = '';
+                for (let i = 0; i < place.photos.length; i++) {
+                    const activeClass = i ? '' : 'active'
+                    carouselImg += `<div class="carousel-item ${activeClass} view text-center">
+                                    <img class="carousel-restaurant d-inline-block" src="${place.photos[i].getUrl({ maxHeight: 500 })}" alt="First slide">
+                                    </div>`
+                }
+                photosDiv.innerHTML = ` <div id="carouselExampleFade" class="carousel slide carousel-fade z-depth-2" data-ride="carousel">
+                                    <ol class="carousel-indicators">
+                                    <li data-target="#carousel-example-1z" data-slide-to="0" class="active"></li>
+                                    <li data-target="#carousel-example-1z" data-slide-to="1"></li>
+                                    <li data-target="#carousel-example-1z" data-slide-to="2"></li>
+                                    </ol>
+                                    <div class="carousel-inner">
+                                        ${carouselImg}
+                                    </div>
+                                    <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#carouselExampleFade" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                    </div>`
+
+
+                for (let i = 0; i < place.reviews.length; i++) {
+                    //restaurant.leaveRating(place.reviews[i].rating, place.reviews[i].text, place.reviews[i].author_name)
+                    restaurant.ratings.push(
+                        {
+                            stars: place.reviews[i].rating,
+                            comment: place.reviews[i].text,
+                            authorName: place.reviews[i].author_name
+                        }
+                    )
+                }
+            } else {
+                alert(status);
+            }
+        }
+        this.leaveReviewForm(restaurant)
+        this.displayRestaurantReviews(restaurant, 'viewRestaurantReviews')
     },
 
     // Google searbox recomendations based on map bounds. Has an error displaying markers.
@@ -544,33 +680,43 @@ var app = {
 }
 
 class Restaurant {
-    constructor(name, address, lat, long) {
+    constructor(name, address, id, lat, long, rating = 1, photoUrl) {
         this.restaurantName = name;
         this.address = address;
+        this.Id = id;
         this.lat = lat;
         this.long = long;
         this.ratings = [];
+        this.rating = rating;
+        this.photoUrl = photoUrl
     }
 
-    leaveRating(newRating) {
-        const rating = new Rating(newRating.stars, newRating.comment)
+    leaveRating(stars, comment, authorName) {
+        const rating = new Rating(stars, comment, authorName)
         this.ratings.push(rating)
+
+        for (let i = 0; i < this.ratings.length; i++) {
+            this.ratings[i].key = i;
+        }
     }
 }
 
 class Rating {
-    constructor(stars, comment) {
+    constructor(stars, comment, authorName) {
+        this.key;
         this.stars = stars;
         this.comment = comment;
+        this.authorName = authorName;
     }
 }
 
 // Solution I found on StackOverflow to solve getMyLocation() error. 
 window.addEventListener('load', function () {
+    /*
     app.createRestaurantCards(app.restaurants[2], `nearbyCard1`)
     app.createRestaurantCards(app.restaurants[3], `nearbyCard2`)
 
-    /*
+    
     app.getMyLocation();
     const request = {
         location: new google.maps.LatLng(48.8737815, 2.3442197),
@@ -580,6 +726,6 @@ window.addEventListener('load', function () {
     app.service = new google.maps.places.PlacesService(app.map);
     app.service.nearbySearch(request, app.serviceCallback());
     */
-    app.createRestaurantPage("nerRes");
+
 })
 
