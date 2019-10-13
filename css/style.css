@@ -17,17 +17,23 @@
     grid-column-gap: 10px;
     grid-row-gap: 10px;
 }
+
 .container2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto auto;
     grid-template-areas:
-    "streetView mapDiv"
-    "aboutDiv photosDiv"
-    "viewRestaurantReviews leaveReview";
+    "restaurantCards mapDiv"
+    "leaveReview streetView"
+    "viewRestaurantReviews viewRestaurantReviews";
     margin: 0;
-    padding: 0;
+    padding: 10px;
     min-width: 100%;
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+}
+.navbar{
+    padding: 0;
 }
 .list-group-item{
     background-color: transparent;
@@ -43,6 +49,7 @@
     grid-area: mapDiv;
     height: auto;
     width: auto;
+    border-radius: 15px;
 }
 .photosDiv {
     grid-area: photosDiv;
@@ -51,23 +58,37 @@
 }
 .streetView {
     grid-area: streetView;
-    height: 500px;
+    height: 100%;
+    border-radius: 15px;
 }
 .viewRestaurantReviews{
     grid-area: viewRestaurantReviews;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin: 0;
+    min-width: 100%;
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
 }
 .leaveReview {
     grid-area: leaveReview;
+    border-radius: 15px;
+    height: 100%;
 }
-.aboutDiv {
-    grid-area: aboutDiv;
-}
-.restaurantCards {
-    margin: 10px;
-    max-width: 100%;
+.leaveReviewForm {
     border-radius: 15px;
 }
-
+.restaurantCards {
+    max-width: 100%;
+    height: 100%;
+    border-radius: 15px;
+}
+.ratingsCard{
+    border-radius: 15px;
+}
+.ratingsCardBody{
+    border-radius: 15px;
+}
 .btn {
     border-radius: 5px;
 }
@@ -101,19 +122,20 @@
 .card-img-top{
     border-radius: 15px 15px 0 0;
     max-width: 400px;
-    max-height: 300px;
+    max-height: 250px;
     min-width: 100%;
-    min-height: auto;
+    min-height: 250px;
 }
 .card-body-restaurants{
     border-radius: 0 0 15px 15px;
-    min-height: 100%;
 }
 .nearbyCard1 {
     grid-area: nearbyCard1;
+    padding: 10px;
 }
 .nearbyCard2 {
     grid-area: nearbyCard2;
+    padding: 10px;
 }
 .title2 {
     grid-area: title2;
@@ -123,16 +145,20 @@
 }
 .featuredCard1{
     grid-area: featuredCard1;
+    padding: 10px;
 }
 .featuredCard2{
     grid-area: featuredCard2;
+    padding: 10px;
 }
 .featuredCard3{
     grid-area: featuredCard3;
+    padding: 10px;
 }
 
-.navbar{
+.header{
     display: grid;
+    grid-template-columns: 1fr;
     grid-auto-flow: column;
     margin: 0;
     min-width: 100%;
@@ -141,17 +167,163 @@
     max-height: 70px;
     margin: 0;
 }
-  /*
-@media screen and (min-width: 500px) {
+
+input[type=text] {
+    border: 2px solid white;
+    background: transparent;
+    color: white;
+}
+.form-control{
+    border: 2px solid white;
+    background: transparent;
+    color: white;
+}
+.form-control::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: white;
+    opacity: 1; /* Firefox */
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: white;
+  }
+  
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: white;
+  } 
+
+  .carousel-caption{
+      bottom: 50%;
+  }
+@media only screen and (max-width : 768px) {
+    .header{
+        display: grid;
+        grid-auto-flow: column;
+        margin: 0;
+        min-width: 100%;
+    }
     .container {
-      grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr;
+        grid-template-areas:
+        "carousel carousel"
+        "title2 title2"
+        "featuredCard1 featuredCard2"
+        "title1 title1"
+        "map map"
+        "nearbyCard1 nearbyCard2"
+        "title3 title3";
+        margin: 0;
+        padding: 10px;
+        min-width: 100%;
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
+    }
+    .container2 {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 80vh auto auto auto auto;
+        grid-template-areas:
+        "restaurantCards"
+        "mapDiv"
+        "streetView"
+        "aboutDiv"
+        "leaveReview"
+        "viewRestaurantReviews";
+        margin: 0;
+        padding: 10px;
+        min-width: 100%;
+        grid-column-gap: 20px;
+        grid-row-gap: 20px;
+    }
+    .viewRestaurantReviews{
+        grid-area: viewRestaurantReviews;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 0;
+        min-width: 100%;
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
+    }
+    .card-img-top{
+        border-radius: 15px 15px 0 0;
+        max-width: 400px;
+        max-height: 150px;
+        min-width: 100%;
+        min-height: 150px;
+    }
+    .card-body-restaurants{
+        border-radius: 0 0 15px 15px;
+    }
+    .leaveReview form{
+        border-radius: 0 0 15px 15px;
+    }
+    .searchBar {
+        display: none;
+    }
+    .map{
+        height: 80vh;
+    }
+    .featuredCard3{
+        display: none;
     }
 }
 
-@media screen and (min-width: 800px) {
+@media only screen and (min-width : 768px) and (max-width : 1024px) {
+    .navbar{
+        display: grid;
+        grid-auto-flow: column;
+        margin: 0;
+        min-width: 100%;
+    }
     .container {
-      grid-template-columns: 1fr 1fr 1fr 1fr;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: auto auto auto auto auto auto;
+        grid-template-areas:
+        "carousel carousel carousel"
+        "title2 title2 title2"
+        "featuredCard1 featuredCard2 featuredCard3"
+        "title1 title1 title1"
+        "map map nearbyCard1"
+        "map map nearbyCard2"
+        "title3 title3 title3";
+        margin: 0;
+        padding: 0;
+        min-width: 100%;
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
+    }
+    .container2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        grid-template-areas:
+        "restaurantCards mapDiv"
+        "leaveReview streetView"
+        "viewRestaurantReviews viewRestaurantReviews";
+        margin: 0;
+        padding: 10px;
+        min-width: 100%;
+        grid-column-gap: 20px;
+        grid-row-gap: 20px;
+    }
+    .card-img-top{
+        border-radius: 15px 15px 0 0;
+        max-width: 400px;
+        max-height: 250px;
+        min-width: 100%;
+        min-height: 250px;
+    }
+    .searchBar {
+        display: none;
+    }
+    .mapDiv{
+        height: auto;
+        width: auto;
+        margin: 10px;
+        border-radius: 15px;
     }
 }
-*/
+
 

@@ -125,7 +125,7 @@ var app = {
                 if (place && place.photos) {
                     app.markers.push(marker)
                     let restaurant = new Restaurant(
-                        place.name, place.vicinity, place.place_id, place.geometry.location.lat(), place.geometry.location.lng(), place.rating, place.photos[0].getUrl())
+                        place.name, place.vicinity, place.place_id, place.geometry.location.lat(), place.geometry.location.lng(), place.rating, place.photos[0].getUrl({ maxHeight: 250 }))
 
                     app.nearbyRestaurants.push(restaurant);
                 }
@@ -165,24 +165,22 @@ var app = {
     },
 
     // Display restaurants reviews
-    displayRestaurantReviews: function (res, displayLocation) {
-        let ratings = res.ratings;
+    displayRestaurantReviews: function (res, reviews, displayLocation) {
+
         const div = document.getElementById(displayLocation);
-        let innerHtml = `<h1 class="text-center"> ${res.restaurantName} Reviews</h1>`;
-        console.log(res.ratings[0])
-        for (const r of res.ratings) {
-            console.log(res.ratings)
-            const ratings = `<div class="card mb-2">
-                            <div class="card-body">
-                            <h6 class="card-title orange-text pb-2 pt-1">${app.displayRating(res.ratings[i].stars)}</h6>
-                            <p class="card-text font-weight-bolder">"${res.ratings[i].comment}"</p>
+        for (let i = 0; i < reviews.length; i++) {
+            console.log(reviews.length)
+            let ratings = `<div class="ratingsCard card mb-2 z-depth-2">
+                            <div class="ratingsCardBody card-body blue-gradient">
+                            <h6 class="card-title white-text font-weight-bolder pb-2 pt-1">${reviews[i].author_name}</h6>
+                            <h6 class="card-title orange-text">${app.displayRating(reviews[i].rating)}</h6>
+                            <p class="card-text white-text ">"${reviews[i].text}"</p>
                             </div>
-                            </div>`;
+                    </div>`;
 
-            innerHtml = innerHtml + ratings;
+            div.innerHTML += ratings;
+
         }
-
-        div.innerHTML = innerHtml
     },
 
     // Gets user geolocation
@@ -232,8 +230,10 @@ var app = {
             const container = document.getElementById('container');
             div.className = `placeResult-${i}`;
             div.id = `placeResult-${i}`
+            div.style = "padding: 10px;"
             container.appendChild(div)
             this.createRestaurantCards(this.nearbyRestaurants[i], div.id)
+
         }
 
     },
@@ -246,9 +246,9 @@ var app = {
         var cardImg = document.createElement('div');
         var cardBody = document.createElement('div');
 
-        card.className = 'restaurantCards z-depth-2'
+        card.className = 'restaurantCards d-flex flex-column z-depth-2'
         cardImg.className = 'view view-cascade'
-        cardBody.className = 'card-body card-body-restaurants card-body-cascade blue-gradient'
+        cardBody.className = 'd-flex flex-column flex-fill card-body card-body-restaurants card-body-cascade blue-gradient'
 
         cardImg.innerHTML = `<img class="card-img-top img-fluid"
                                 src="${restaurant.photoUrl}"
@@ -258,11 +258,10 @@ var app = {
                             </a>`
 
         cardBody.innerHTML = `<h5 class="orange-text pb-2 pt-1">${app.displayAvgRating(restaurant.rating)}</h5>
-                              <h4 id="restaurantName" class="font-weight-bold card-title text-white">${restaurant.restaurantName}</h4>
+                              <h4 id="restaurantName" class="font-weight-bold card-title text-white h4-responsive">${restaurant.restaurantName}</h4>
                               <p class="card-text text-white">${restaurant.address}</p>
-                              <div class="d-flex justify-content-around align-self-end">
+                              <div class="d-flex h-100 justify-content-center align-items-end">
                               <a id="moreInfo${restaurant.restaurantName}" class="btn btn-unique peach-gradient">More info</a>
-                              <a onclick="app.leaveReviewForm('${restaurant.restaurantName}')" id="${restaurant.restaurantName}Button" class="btn btn-unique peach-gradient">Leave Review</a>
                               </div>
                               `
 
@@ -273,11 +272,8 @@ var app = {
         const info = document.getElementById('moreInfo' + restaurant.restaurantName);
 
         info.addEventListener('click', function () {
-            /* This should take you to the restaurants page. Not sure how I should do it. 
-                Should I dynamically create new HTML page or is there another way?? */
 
             app.createRestaurantPage(restaurant)
-            // app.displayRestaurantReviews(restaurant, "viewRestaurantReviews")
         })
     },
 
@@ -379,29 +375,29 @@ var app = {
     // Form to leave a restaurant rating NEED WORK
     leaveReviewForm: function (restaurant) {
         const form = document.getElementById("leaveReview");
-        form.innerHTML = '<form class="text-center border border-light p-5" action="#!">' +
-            '<p class="h4 mb-4">Leave Review</p>' +
-            '<input name="rating" type="text" id="authors-name" class="form-control mb-4" placeholder="Name">' +
+        form.innerHTML = '<form class="leaveReviewForm blue-gradient text-center p-5" action="#!">' +
+            '<h4 class="h4 mb-4 white-text">Leave Review</h4>' +
+            '<input name="rating" type="text" id="authors-name" class="outline-white form-control mb-4" placeholder="Name">' +
             '<div class="d-flex mb-1">' +
             '<div class="custom-control custom-radio mr-3">' +
             '<input name="rating" type="radio" value="1" class="custom-control-input" id="defaultGroupExample1">' +
-            '<label class="custom-control-label" for="defaultGroupExample1">1 Star</label>' +
+            '<label class="text-white custom-control-label" for="defaultGroupExample1">1 Star</label>' +
             '</div>' +
             '<div class="custom-control custom-radio mr-3">' +
             '<input name="rating" type="radio" value="2" class="custom-control-input" id="defaultGroupExample2">' +
-            '<label class="custom-control-label" for="defaultGroupExample2">2 Stars</label>' +
+            '<label class="text-white custom-control-label" for="defaultGroupExample2">2 Stars</label>' +
             '</div>' +
             '<div class="custom-control custom-radio mr-3">' +
             '<input name="rating" type="radio" value="3" class="custom-control-input" id="defaultGroupExample3">' +
-            '<label class="custom-control-label" for="defaultGroupExample3">3 Stars</label>' +
+            '<label class="text-white custom-control-label" for="defaultGroupExample3">3 Stars</label>' +
             '</div>' +
             '<div class="custom-control custom-radio mr-3">' +
             '<input name="rating" type="radio" value="4" class="custom-control-input" id="defaultGroupExample4">' +
-            '<label class="custom-control-label" for="defaultGroupExample4">4 Stars</label>' +
+            '<label class="text-white custom-control-label" for="defaultGroupExample4">4 Stars</label>' +
             '</div>' +
             '<div class="custom-control custom-radio mr-3">' +
             '<input name="rating" type="radio" value="5" class="custom-control-input" id="defaultGroupExample5">' +
-            '<label class="custom-control-label" for="defaultGroupExample5">5 Stars</label>' +
+            '<label class="text-white custom-control-label" for="defaultGroupExample5">5 Stars</label>' +
             '</div>' +
             '</div>' +
             '<div class="form-group">' +
@@ -409,11 +405,10 @@ var app = {
             '</div>' +
             '<div class="custom-control custom-checkbox mb-4">' +
             '<input type="checkbox" class="custom-control-input" id="defaultContactFormCopy">' +
-            '<label class="custom-control-label" for="defaultContactFormCopy">Send me a copy of this message</label></div>' +
             '<!-- Send button -->' +
             '<div class="text-center">' +
-            '<button id="leaveReviewBtn" class="btn btn-info my-4" type="button">Leave review</button>' +
-            '<button id="cancelReviewBtn" class="btn my-4 btn-danger" type="button">Cancel</button>' +
+            '<button id="leaveReviewBtn" class="peach-gradient btn btn-info my-4" type="button">Leave review</button>' +
+            '<button id="cancelReviewBtn" class="btn my-4 btn-outline-white" type="button">Cancel</button>' +
             '</div>' +
             '</form>'
 
@@ -423,8 +418,9 @@ var app = {
             const stars = Number(document.querySelector('input[name="rating"]:checked').value);
             const message = document.getElementById("comments").value;
             restaurant.leaveRating(stars, message, authorName)
-
-            form.innerHTML = `<div class="alert alert-primary" role="alert">
+            console.log(restaurant.ratings.length)
+            app.displayNewReview({ author_name: authorName, rating: stars, text: message }, 'viewRestaurantReviews')
+            form.innerHTML += `<div class="alert alert-primary" role="alert">
             Thanks for leaving your Review
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -432,7 +428,19 @@ var app = {
             </div>`
         }
     },
+    displayNewReview: function (reviews, displayLocation) {
 
+        const div = document.getElementById(displayLocation);
+        let review = `<div class="ratingsCard card mb-2 z-depth-2">
+                            <div class="ratingsCardBody card-body blue-gradient">
+                            <h6 class="card-title white-text font-weight-bolder pb-2 pt-1">${reviews.author_name}</h6>
+                            <h6 class="card-title orange-text">${app.displayRating(reviews.rating)}</h6>
+                            <p class="card-text white-text ">"${reviews.text}"</p>
+                            </div>
+                    </div>`;
+
+        div.innerHTML += review;
+    },
     // For to create new Restaurants NEEDS WORK. 
     createNewRestaurantForm: function (lat, lng) {
         const form = document.getElementById("newRestaurantForm");
@@ -497,25 +505,20 @@ var app = {
         const container = document.getElementById('container');
         container.className = 'container2';
         container.innerHTML = "";
+
+
+        const card = document.createElement('div');
+        const cardImg = document.createElement('div');
+        const cardBody = document.createElement('div');
         // create streetView div, assign id and classname 
         const streetViewDiv = document.createElement('div');
         streetViewDiv.id = "streetView";
-        streetViewDiv.className = 'streetView';
+        streetViewDiv.className = 'streetView z-depth-2';
 
         // create mapDiv div, assign id and classname 
         const mapDiv = document.createElement('div');
         mapDiv.id = "mapDiv";
-        mapDiv.className = 'mapDiv';
-
-        // create aboutDiv div, assign id and classname 
-        const aboutDiv = document.createElement('div');
-        aboutDiv.id = "aboutDiv";
-        aboutDiv.className = 'aboutDiv';
-
-        // create aboutDiv div, assign id and classname 
-        const photosDiv = document.createElement('div');
-        photosDiv.id = "photosDiv";
-        photosDiv.className = 'photosDiv';
+        mapDiv.className = 'mapDiv z-depth-2';
 
         // create aboutDiv div, assign id and classname 
         const viewRestaurantReviews = document.createElement('div');
@@ -525,19 +528,17 @@ var app = {
         // create aboutDiv div, assign id and classname 
         const leaveReviewsDiv = document.createElement('div');
         leaveReviewsDiv.id = "leaveReview";
-        leaveReviewsDiv.className = 'leaveReview';
+        leaveReviewsDiv.className = 'leaveReview z-depth-2';
 
         // append divs
         container.appendChild(streetViewDiv);
         container.appendChild(mapDiv);
-        container.appendChild(aboutDiv);
-        container.appendChild(photosDiv);
         container.appendChild(viewRestaurantReviews);
         container.appendChild(leaveReviewsDiv);
 
         // create steetView object 
         var panorama = new google.maps.StreetViewPanorama(
-            document.getElementById('streetView'), {
+            streetViewDiv, {
             position: new google.maps.LatLng(restaurant.lat, restaurant.long),
             pov: {
                 heading: 34,
@@ -583,59 +584,60 @@ var app = {
                                 ${dropdownItem}
                                 </div>`;
 
-                aboutDiv.innerHTML = `<div class="aboutCard blue-gradient">
-                                    <div class="card-body aboutCard blue-gradient">
-                                    <h2 class="text-white">${restaurant.restaurantName}</h2><h4 class="orange-text">${app.displayAvgRating(restaurant.rating)}</h4>
-                                    <ul class="list-group list-group-flush">
-                                    <li class="list-group-item text-white"><i class="fas fa-map-marker-alt"></i> ${restaurant.address}</li>
-                                    <li class="list-group-item text-white"><i class="fas fa-phone"></i> ${place.formatted_phone_number}</li>
-                                    </ul>
-                                    <button onclick="window.location.href = '${place.website}';" class="btn peach-gradient" type="button">Go to Website</button> ${dropdown}
-                                    </div>
-                                    </div>`;
                 let carouselImg = '';
                 for (let i = 0; i < place.photos.length; i++) {
                     const activeClass = i ? '' : 'active'
-                    carouselImg += `<div class="carousel-item ${activeClass} view text-center">
-                                    <img class="carousel-restaurant d-inline-block" src="${place.photos[i].getUrl({ maxHeight: 500 })}" alt="First slide">
+                    carouselImg += `<div class="card-img-top carousel-item ${activeClass} view text-center">
+                                    <img class="carousel-restaurant d-inline-block" src="${place.photos[i].getUrl({ maxWidth: 500, maxHeight: 500 })}" alt="First slide">
                                     </div>`
                 }
-                photosDiv.innerHTML = ` <div id="carouselExampleFade" class="carousel slide carousel-fade z-depth-2" data-ride="carousel">
-                                    <ol class="carousel-indicators">
-                                    <li data-target="#carousel-example-1z" data-slide-to="0" class="active"></li>
-                                    <li data-target="#carousel-example-1z" data-slide-to="1"></li>
-                                    <li data-target="#carousel-example-1z" data-slide-to="2"></li>
-                                    </ol>
-                                    <div class="carousel-inner">
-                                        ${carouselImg}
-                                    </div>
-                                    <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                    <a class="carousel-control-next" href="#carouselExampleFade" role="button" data-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                    </div>`
 
+                card.className = 'restaurantCards d-flex flex-column z-depth-2'
+                cardImg.className = 'view view-cascade'
+                cardBody.className = 'd-flex flex-column flex-fill card-body card-body-restaurants card-body-cascade blue-gradient'
+
+                cardImg.innerHTML = `<div id="carouselExampleFade" class="carousel slide carousel-fade z-depth-2" data-ride="carousel">
+                <ol class="carousel-indicators">
+                <li data-target="#carousel-example-1z" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel-example-1z" data-slide-to="1"></li>
+                <li data-target="#carousel-example-1z" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner">
+                    ${carouselImg}
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleFade" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+                </div>`
+                cardBody.innerHTML = `<div class="aboutCard blue-gradient">
+                <h2 class="h2-responsive text-white">${restaurant.restaurantName}</h2><h4 class="orange-text">${app.displayAvgRating(restaurant.rating)}</h4>
+                <ul class="list-group list-group-flush">
+                <li class="list-group-item text-white"><i class="fas fa-map-marker-alt"></i> ${restaurant.address}</li>
+                <li class="list-group-item text-white"><i class="fas fa-phone"></i> ${place.formatted_phone_number}</li>
+                </ul>
+                <button onclick="window.location.href = '${place.website}';" class="btn peach-gradient" type="button">Go to Website</button> ${dropdown}
+                </div>`;
+
+                card.appendChild(cardImg);
+                card.appendChild(cardBody);
+                container.appendChild(card)
 
                 for (let i = 0; i < place.reviews.length; i++) {
                     //restaurant.leaveRating(place.reviews[i].rating, place.reviews[i].text, place.reviews[i].author_name)
-                    restaurant.ratings.push(
-                        {
-                            stars: place.reviews[i].rating,
-                            comment: place.reviews[i].text,
-                            authorName: place.reviews[i].author_name
-                        }
-                    )
+                    restaurant.leaveRating(place.reviews[i].rating, place.reviews[i].text, place.reviews[i].author_name)
                 }
+                app.displayRestaurantReviews(restaurant, place.reviews, 'viewRestaurantReviews')
             } else {
                 alert(status);
             }
         }
         this.leaveReviewForm(restaurant)
-        this.displayRestaurantReviews(restaurant, 'viewRestaurantReviews')
+
     },
 
     // Google searbox recomendations based on map bounds. Has an error displaying markers.
