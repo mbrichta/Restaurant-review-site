@@ -82,11 +82,11 @@ function initMap() {
         //InfoWindow with two buttons
         const infoWindow = new google.maps.InfoWindow({
             content: '<div class="text-center">' +
-                `<button id="NewRestaurantBtn" onClick="app.createNewRestaurantForm(${lat}, ${lng})" class="btn btn-info  my-4" type="button">Create new Restaurant</button>` +
-                `<button id="cancelNewRestaurantBtn" onClick="app.deleteLastMarker()" class="btn my - 4 btn - danger" type="button">Cancel</button>` +
+                `<button id="NewRestaurantBtn" onClick="app.createNewRestaurantForm(${lat}, ${lng})" class="btn btn-info" type="button">Create new Restaurant</button>` +
+                `<button id="cancelNewRestaurantBtn" onClick="app.deleteLastMarker()" class="btn" type="button">Cancel</button>` +
                 '</div>'
         });
-
+        app.infoWindow = infoWindow;
         infoWindow.setPosition(e.latLng)
         infoWindow.open(app.map)
     });
@@ -111,6 +111,7 @@ var app = {
     service: null,
     nearbyRestaurants: [],
     userPosition: null,
+    InfoWindow: null,
 
     // ServiceCallback for PlaceService request. Adds Markers on map
     serviceCallback: function (results, status) {
@@ -152,6 +153,7 @@ var app = {
     deleteLastMarker: function () {
         const marker = app.markers.pop()
         marker.setMap(null)
+        this.infoWindow.close();
     },
 
     // Displays featured restaurants 
@@ -222,12 +224,15 @@ var app = {
 
     // Displays nearby restaurants NOT WORKING!!
     displayNearbyRestaurants: function () {
+        const container = document.getElementById('placeResults');
+        container.innerHTML = '';
+        document.getElementById('nearbyCard1').innerHTML = '';
+        document.getElementById('nearbyCard2').innerHTML = '';
         this.createRestaurantCards(this.nearbyRestaurants[0], `nearbyCard1`)
         this.createRestaurantCards(this.nearbyRestaurants[1], `nearbyCard2`)
 
         for (let i = 2; i < this.nearbyRestaurants.length; i++) {
             const div = document.createElement('div');
-            const container = document.getElementById('placeResults');
             div.className = `placeResult-${i}`;
             div.id = `placeResult-${i}`
             div.style = "padding: 10px;"
@@ -367,7 +372,7 @@ var app = {
         });
         this.markers.push(marker)
         marker.addListener('click', function () {
-            app.map.setZoom(12);
+            app.map.setZoom(2);
             app.map.setCenter(marker.getPosition());
         });
     },
@@ -441,59 +446,33 @@ var app = {
     },
     // For to create new Restaurants NEEDS WORK. 
     createNewRestaurantForm: function (lat, lng) {
-        const form = document.getElementById("newRestaurantForm");
-        form.innerHTML = `<form class="border border-light p-5">
-                            <p class="h4 mb-4 text-center">Register a restaurant</p>
+        const form = document.getElementById("nearbyCard1");
+        form.innerHTML = `<form class="newRestaurantForm p-5 blue-gradient z-depth-2">
+                            <h4 class="h4 mb-4 text-center text-white">Register a restaurant</h4>
                             <input type="text" id="newRestaurantName" class="form-control mb-4" placeholder="Restaurant name">
                             <input type="text" id="newRestaurantAddress" class="form-control mb-4" placeholder="Restaurant address">
-                            <div class="text-center">
-                            <button id="createRestaurantBtn" class="btn btn-info my-4" type="button">Create new Restaurant</button>
-                            <button id="cancelRestaurantBtn" class="btn my-4 btn-danger" type="button">Cancel</button>
-                            </div>
-                            <div class="text-center">
-                            <p>Not a member?
-                            <a href="">Register</a>
-                            </p>
-                            <p>or sign in with:</p>
-                            <a type="button" class="light-blue-text mx-2">
-                            <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a type="button" class="light-blue-text mx-2">
-                            <i class="fab fa-twitter"></i>
-                            </a>
-                            <a type="button" class="light-blue-text mx-2">
-                            <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a type="button" class="light-blue-text mx-2">
-                            <i class="fab fa-github"></i>
-                            </a>
+                            <div class="d-flex text-center">
+                            <button id="createRestaurantBtn" class="btn btn-md btn-rounded peach-gradient" type="button">Create new Restaurant</button>
+                            <button id="cancelRestaurantBtn" class="btn btn-md btn-rounded btn-outline-white " type="button">Cancel</button>
                             </div>
                             </form>`
-
+        form.scrollIntoView();
         document.getElementById("createRestaurantBtn").onclick = function () {
             const newRestaurantName = document.getElementById("newRestaurantName").value;
             const newRestaurantAddress = document.getElementById("newRestaurantAddress").value;
 
-            const restaurant = new Restaurant(newRestaurantName, newRestaurantAddress, lat, lng);
-            app.createRestaurantCards(restaurant, "cards")
-
-            form.innerHTML = `<div class="alert alert-primary" role="alert">
-                            Restaurant successfully created
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                            </button>
-                            </div>`
+            const restaurant = new Restaurant(newRestaurantName, newRestaurantAddress, null, lat, lng);
+            app.nearbyRestaurants.push(restaurant);
+            form.innerHTML = "";
+            app.displayNearbyRestaurants();
+            app.infoWindow.close();
         }
 
         document.getElementById("cancelRestaurantBtn").onclick = function () {
             const marker = app.markers.pop()
             marker.setMap(null)
-            form.innerHTML = `<div class="alert alert-warning" role="alert">
-                            Restaurant canceled
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                            </button>
-                            </div>`;
+            app.displayNearbyRestaurants();
+            app.infoWindow.close();
         }
     },
 
@@ -682,7 +661,7 @@ var app = {
 }
 
 class Restaurant {
-    constructor(name, address, id, lat, long, rating = 1, photoUrl) {
+    constructor(name, address, id, lat, long, rating = 1, photoUrl = "https://mdbootstrap.com/img/Photos/Lightbox/Thumbnail/img%20(147).jpg") {
         this.restaurantName = name;
         this.address = address;
         this.Id = id;
