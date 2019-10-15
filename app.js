@@ -227,7 +227,7 @@ var app = {
 
         for (let i = 2; i < this.nearbyRestaurants.length; i++) {
             const div = document.createElement('div');
-            const container = document.getElementById('container');
+            const container = document.getElementById('placeResults');
             div.className = `placeResult-${i}`;
             div.id = `placeResult-${i}`
             div.style = "padding: 10px;"
@@ -379,23 +379,23 @@ var app = {
             '<h4 class="h4 mb-4 white-text">Leave Review</h4>' +
             '<input name="rating" type="text" id="authors-name" class="outline-white form-control mb-4" placeholder="Name">' +
             '<div class="d-flex mb-1">' +
-            '<div class="custom-control custom-radio mr-3">' +
+            '<div class="custom-control custom-radio mr-1">' +
             '<input name="rating" type="radio" value="1" class="custom-control-input" id="defaultGroupExample1">' +
             '<label class="text-white custom-control-label" for="defaultGroupExample1">1 Star</label>' +
             '</div>' +
-            '<div class="custom-control custom-radio mr-3">' +
+            '<div class="custom-control custom-radio mr-1">' +
             '<input name="rating" type="radio" value="2" class="custom-control-input" id="defaultGroupExample2">' +
             '<label class="text-white custom-control-label" for="defaultGroupExample2">2 Stars</label>' +
             '</div>' +
-            '<div class="custom-control custom-radio mr-3">' +
+            '<div class="custom-control custom-radio mr-1">' +
             '<input name="rating" type="radio" value="3" class="custom-control-input" id="defaultGroupExample3">' +
             '<label class="text-white custom-control-label" for="defaultGroupExample3">3 Stars</label>' +
             '</div>' +
-            '<div class="custom-control custom-radio mr-3">' +
+            '<div class="custom-control custom-radio mr-1">' +
             '<input name="rating" type="radio" value="4" class="custom-control-input" id="defaultGroupExample4">' +
             '<label class="text-white custom-control-label" for="defaultGroupExample4">4 Stars</label>' +
             '</div>' +
-            '<div class="custom-control custom-radio mr-3">' +
+            '<div class="custom-control custom-radio mr-1">' +
             '<input name="rating" type="radio" value="5" class="custom-control-input" id="defaultGroupExample5">' +
             '<label class="text-white custom-control-label" for="defaultGroupExample5">5 Stars</label>' +
             '</div>' +
@@ -403,12 +403,10 @@ var app = {
             '<div class="form-group">' +
             '<textarea class="form-control rounded-0" id="comments" rows="3" placeholder="Feedback"></textarea>' +
             '</div>' +
-            '<div class="custom-control custom-checkbox mb-4">' +
-            '<input type="checkbox" class="custom-control-input" id="defaultContactFormCopy">' +
             '<!-- Send button -->' +
-            '<div class="text-center">' +
-            '<button id="leaveReviewBtn" class="peach-gradient btn btn-info my-4" type="button">Leave review</button>' +
-            '<button id="cancelReviewBtn" class="btn my-4 btn-outline-white" type="button">Cancel</button>' +
+            '<div class="d-flex justify-content-center">' +
+            '<button id="leaveReviewBtn" class="peach-gradient btn" type="button">Leave review</button>' +
+            '<button id="cancelReviewBtn" class="btn btn-outline-white" type="button">Cancel</button>' +
             '</div>' +
             '</form>'
 
@@ -588,7 +586,7 @@ var app = {
                 for (let i = 0; i < place.photos.length; i++) {
                     const activeClass = i ? '' : 'active'
                     carouselImg += `<div class="card-img-top carousel-item ${activeClass} view text-center">
-                                    <img class="carousel-restaurant d-inline-block" src="${place.photos[i].getUrl({ maxWidth: 500, maxHeight: 500 })}" alt="First slide">
+                                    <img class="carousel-restaurant d-inline-block img-fluid" src="${place.photos[i].getUrl({ maxWidth: 500, maxHeight: 500 })}" alt="First slide">
                                     </div>`
                 }
 
@@ -620,7 +618,9 @@ var app = {
                 <li class="list-group-item text-white"><i class="fas fa-map-marker-alt"></i> ${restaurant.address}</li>
                 <li class="list-group-item text-white"><i class="fas fa-phone"></i> ${place.formatted_phone_number}</li>
                 </ul>
+                <div class="d-flex">
                 <button onclick="window.location.href = '${place.website}';" class="btn peach-gradient" type="button">Go to Website</button> ${dropdown}
+                </div>
                 </div>`;
 
                 card.appendChild(cardImg);

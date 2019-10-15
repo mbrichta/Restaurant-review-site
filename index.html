@@ -14,21 +14,28 @@
 
 <body>
     <header class="header">
-        <nav class="navbar blue-gradient">
-            <a class="navbar-brand justify-content-start" href="#">
-                <img class="logo" src="img/logo.png">
-            </a>
-            <div class="d-flex flex-fill white-text justify-content-center align-items-center">
-                <form class="searchBar form-inline my-2 justify-content-center">
-                    <input id="search" class="form-control" type="search" placeholder="I'm looking for..."
-                        aria-label="Search">
-                    <button class="btn btn-md peach-gradient my-2 my-sm-0 ml-1 mr-3" type="submit"><i
-                            class="fas fa-search pl-1"></i></button>
-                </form>
-            </div>
-            <div class="justify-content-end" id="navbarTogglerDemo01">
-                <button class="btn btn-md btn-outline-white" type="button">login</button>
-                <button class="btn btn-md btn-rounded peach-gradient ml-0" type="button">Sign up</button>
+        <nav class="navbar navbar-expand-lg blue-gradient">
+            <div class="d-flex flex-fill">
+                <a class="navbar-brand justify-content-start" href="#">
+                    <img class="logo img-fluid" src="img/logo.png">
+                </a>
+                <div class="d-flex flex-fill white-text justify-content-center align-items-center">
+                    <form class="searchBar form-inline my-2 justify-content-center">
+                        <input id="search" class="form-control" type="search" placeholder="I'm looking for..."
+                            aria-label="Search">
+                        <button class="btn btn-md peach-gradient my-2 my-sm-0 ml-1 mr-3" type="submit"><i
+                                class="fas fa-search pl-1"></i></button>
+                    </form>
+                </div>
+                <div class="d-flex justify-content-end align-items-center" id="navbarTogglerDemo01">
+                    <div>
+                        <button class="btn btn-md btn-rounded btn-outline-white" type="button">login</button>
+                    </div>
+                    <div>
+                        <button class="btn btn-md btn-rounded peach-gradient" type="button">Sign up</button>
+                    </div>
+                </div>
+
             </div>
         </nav>
     </header>
@@ -43,19 +50,19 @@
                 <li data-target="#carousel-example-1z" data-slide-to="2"></li>
             </ol>
             <div class="carousel-inner d-flex">
-                <div class="carousel-caption align-middle">
-                    <h1 class="h1-responsive">Find the best Restaurants near you</h1>
+                <div class="carousel-caption d-flex">
+                    <h1 class="h1-responsive align-self-center">Find the best Restaurants near you</h1>
                 </div>
                 <div class="carousel-item active view">
-                    <img class="carousel-img" src="img/carousel1.jpg" alt="First slide">
+                    <img class="carousel-img img-fluid" src="img/carousel1.jpg" alt="First slide">
                     <div class="mask flex-center rgba-blue-light"></div>
                 </div>
                 <div class="carousel-item view">
-                    <img class="carousel-img" src="img/carousel2.jpg" alt="Second slide">
+                    <img class="carousel-img img-fluid" src="img/carousel2.jpg" alt="Second slide">
                     <div class="mask flex-center rgba-blue-light"></div>
                 </div>
                 <div class="carousel-item view">
-                    <img class="carousel-img" src="img/carousel3.jpg" alt="Third slide">
+                    <img class="carousel-img img-fluid" src="img/carousel3.jpg" alt="Third slide">
                     <div class="mask flex-center rgba-blue-light"></div>
                 </div>
             </div>
@@ -84,6 +91,7 @@
 
         <h3 class="title3 text-center">Restaurants nearby</h3>
 
+        <div id="placeResults" class="placeResults"></div>
     </div>
     <!-- SCRIPTS -->
     <script src="app.js"></script>
