@@ -158,7 +158,6 @@ var app = {
 
     // Displays featured restaurants 
     displayFeturedRestaurants: function (restaurant) {
-
         if (restaurant.rating > 4) {
             this.featuredRestaurants.push(restaurant);
             this.featuredRestaurants.slice(0, 3);
@@ -168,7 +167,6 @@ var app = {
 
     // Display restaurants reviews
     displayRestaurantReviews: function (res, reviews, displayLocation) {
-
         const div = document.getElementById(displayLocation);
         for (let i = 0; i < reviews.length; i++) {
             console.log(reviews.length)
@@ -181,7 +179,6 @@ var app = {
                     </div>`;
 
             div.innerHTML += ratings;
-
         }
     },
 
@@ -238,9 +235,7 @@ var app = {
             div.style = "padding: 10px;"
             container.appendChild(div)
             this.createRestaurantCards(this.nearbyRestaurants[i], div.id)
-
         }
-
     },
 
     // Creates Restaurants cards
@@ -579,7 +574,7 @@ var app = {
                 <li data-target="#carousel-example-1z" data-slide-to="1"></li>
                 <li data-target="#carousel-example-1z" data-slide-to="2"></li>
                 </ol>
-                <div class="carousel-inner">
+                <div class="carousel-inner restaurant-carousel-inner">
                     ${carouselImg}
                 </div>
                 <a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-slide="prev">

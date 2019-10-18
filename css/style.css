@@ -250,7 +250,7 @@ input[type=text] {
 }   
 
 
-@media only screen and (max-width : 600px) {
+@media only screen and (max-width : 700px) {
     .header{
         display: grid;
         grid-auto-flow: column;
@@ -311,7 +311,7 @@ input[type=text] {
         max-width: 400px;
         max-height: 150px;
         min-width: 100%;
-        min-height: 150px;
+        min-height: 100%;
     }
     .card-body-restaurants{
         border-radius: 0 0 15px 15px;
@@ -334,9 +334,14 @@ input[type=text] {
     .map {
         height: 70vh;
     }
+
+    .restaurant-carousel-inner {
+        height: 29vh;
+        width: 100%;
+    }
     }
 
-@media only screen and (min-width : 600px) and (max-width : 1024px) {
+@media only screen and (min-width : 700px) and (max-width : 1024px) {
 
     .container {
         display: grid;
